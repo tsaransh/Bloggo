@@ -26,7 +26,7 @@ public class Post {
     @Column(name="content", nullable = false)
     private String Content;
     @CreatedDate
-    @Column(name="DateTime")
+    @Column(name="DateTime", nullable = false)
     private Date dataTime;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
