@@ -8,6 +8,7 @@ import com.springboot.blog.exception.BlogApiException;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.CommentDTO;
 import com.springboot.blog.services.CommentServices;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,13 @@ public class CommentServicesImpl implements CommentServices {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public CommentServicesImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServicesImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper modelMapper) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -75,23 +79,32 @@ public class CommentServicesImpl implements CommentServices {
     }
 
     private Comment convertToComment(CommentDTO commentDTO) {
-        Comment comment = new Comment();
-        comment.setId(commentDTO.getId());
-        comment.setName(commentDTO.getName());
-        comment.setEmail(commentDTO.getEmail());
-        comment.setDate(commentDTO.getDate());
-        comment.setCommentBody(commentDTO.getCommentBody());
+        // This code is replaced by ModelMapper
+//        Comment comment = new Comment();
+//        comment.setId(commentDTO.getId());
+//        comment.setName(commentDTO.getName());
+//        comment.setEmail(commentDTO.getEmail());
+//        comment.setDate(commentDTO.getDate());
+//        comment.setCommentBody(commentDTO.getCommentBody());
+
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
+
         return comment;
     }
 //    sdf
 
     private CommentDTO convertToCommentDTO(Comment comment) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setId(comment.getId());
-        commentDTO.setName(comment.getName());
-        commentDTO.setEmail(comment.getEmail());
-        commentDTO.setDate(comment.getDate());
-        commentDTO.setCommentBody(comment.getCommentBody());
+
+//        This code is replace by ModelMapper
+//        CommentDTO commentDTO = new CommentDTO();
+//        commentDTO.setId(comment.getId());
+//        commentDTO.setName(comment.getName());
+//        commentDTO.setEmail(comment.getEmail());
+//        commentDTO.setDate(comment.getDate());
+//        commentDTO.setCommentBody(comment.getCommentBody());
+
+        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+
         return commentDTO;
     }
 }
