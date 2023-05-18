@@ -44,6 +44,7 @@ public class ApplicationConfiguration {
                 .csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .requestMatchers( "/api/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

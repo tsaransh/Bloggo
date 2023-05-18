@@ -3,6 +3,7 @@ package com.springboot.blog.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -22,6 +24,7 @@ public class User {
     private String username;
     private String email;
     private String password;
+
     @CreatedDate
     private Date createDate;
 
