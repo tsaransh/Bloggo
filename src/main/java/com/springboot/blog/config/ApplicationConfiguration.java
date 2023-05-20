@@ -1,6 +1,8 @@
 package com.springboot.blog.config;
 
 import com.springboot.blog.Security.CustomUserDetailsService;
+import com.springboot.blog.Security.JwtAuthenticationEntryPoint;
+import com.springboot.blog.Security.JwtAuthenticationFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,9 +15,11 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -26,6 +30,9 @@ public class ApplicationConfiguration {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -38,18 +45,31 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf().disable()
-                .authorizeRequests()
-                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .requestMatchers( "/api/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
-                .httpBasic();
-        http.authenticationProvider(daoAuthenticationProvider());
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                .requestMatchers( "/api/v1/auth/**").permitAll()
+                .anyRequest().authenticated();
 
+    // use only for basic auth
+//                .and()
+//                .httpBasic();
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.authenticationProvider(daoAuthenticationProvider());
         return http.build();
     }
 

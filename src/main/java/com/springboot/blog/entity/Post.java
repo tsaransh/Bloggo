@@ -18,6 +18,7 @@ import java.util.Set;
 @Table(name="post", uniqueConstraints = {@UniqueConstraint(columnNames = {"title"})})
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
